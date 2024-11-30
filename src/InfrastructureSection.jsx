@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const GradientText = ({ children }) => (
-  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8a8a7b] to-[#5c5c52] uppercase font-bold">
-    {children}
-  </span>
-);
-
 const InfrastructureSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  // Sample images array - replace with your actual images
+  // Using placeholder images for demonstration
+  // Replace these URLs with your actual image paths - make sure they're relative to your public directory
   const images = [
-    "infra1.png",
-    "infra2.png",
+    "infra1.png",  
+    "infra2.png",  
     "infra3.png",
     "infra4.jpg",
     "infra5.jpg",
@@ -29,13 +24,11 @@ const InfrastructureSection = () => {
     setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
-  // Auto-advance slides
   useEffect(() => {
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
   }, []);
 
-  // Handle touch events for swipe
   const handleTouchStart = (e) => {
     setTouchStart(e.touches[0].clientX);
   };
@@ -46,17 +39,15 @@ const InfrastructureSection = () => {
 
   const handleTouchEnd = () => {
     if (touchStart - touchEnd > 50) {
-      // Swipe left
       nextSlide();
     }
     if (touchStart - touchEnd < -50) {
-      // Swipe right
       prevSlide();
     }
   };
 
   return (
-    <section className="bg-[#f2f2eb] py-8 md:py-16">
+    <section className="bg-[#f2f2eb] py-8 md:py-16 w-full">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-2">
         <h2 className="text-3xl md:text-5xl lg:text-5xl font-semibold tracking-tight mb-6 md:mb-8 text-[#2c2c29] uppercase text-center">
           Our
@@ -83,18 +74,18 @@ const InfrastructureSection = () => {
               uniform levelling on SMT pads.
             </p>
           </div>
-          <div className="flex-1">
+          <div className="w-full md:flex-1"> {/* Modified width handling */}
             <div 
-              className="relative w-full aspect-[4/3] rounded-lg shadow-lg bg-white/60 shadow-[#7a7a6c]/10 backdrop-blur-sm border border-[#e5e5de] overflow-hidden"
+              className="relative w-full h-[300px] md:h-auto md:aspect-[4/3] rounded-lg shadow-lg bg-white/60 shadow-[#7a7a6c]/10 backdrop-blur-sm border border-[#e5e5de] overflow-hidden"
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              <div className="absolute inset-0">
+              <div className="absolute inset-0 w-full h-full"> {/* Explicit dimensions */}
                 {images.map((img, index) => (
                   <div
                     key={index}
-                    className={`absolute inset-0 transition-all duration-500 ease-in-out ${
+                    className={`absolute inset-0 w-full h-full transition-all duration-500 ease-in-out ${
                       index === currentSlide 
                         ? "opacity-100 translate-x-0" 
                         : index < currentSlide 
@@ -105,27 +96,18 @@ const InfrastructureSection = () => {
                     <img
                       src={img}
                       alt={`Infrastructure ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center"
+                      onError={(e) => {
+                        console.error(`Error loading image: ${img}`);
+                        e.target.src = "/api/placeholder/400/300"; // Fallback placeholder
+                      }}
                     />
                   </div>
                 ))}
               </div>
               
-              {/* Navigation buttons */}
-              <button
-                onClick={prevSlide}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 bg-white/80 rounded-full shadow-md hover:bg-white transition-colors duration-200 focus:outline-none z-10"
-              >
-                <ChevronLeft className="w-6 h-6 text-gray-800" />
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-white/80 rounded-full shadow-md hover:bg-white transition-colors duration-200 focus:outline-none z-10"
-              >
-                <ChevronRight className="w-6 h-6 text-gray-800" />
-              </button>
               
-              {/* Slide indicators */}
+              
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
                 {images.map((_, index) => (
                   <button
